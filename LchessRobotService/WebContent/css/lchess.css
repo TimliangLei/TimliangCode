@@ -1,0 +1,87 @@
+header {
+	display: block;
+	margin: 0 auto;
+	width: 100%;
+	text-align: center;
+}
+
+header h1 {
+	font-family: arial;
+	font-size: 40px;
+	font-weight: bold;
+}
+
+header #newgame {
+	display: block;
+	margin: 20px auto;
+	width: 100px;
+	padding: 10px;
+	background-color: #9370DB;
+	font-family: arial;
+	color: white;
+	border-radius: 10px;
+	text-decoration: none;
+}
+
+header #newgamebutton:hover {
+	background-color: #9f8b77;
+}
+
+header #enter {
+	background-color: #eee4da;
+}
+
+.prscore {
+	font-size: 150%;
+}
+
+#prscore {
+	width: 560px;
+	height: 30px;
+	margin: auto;
+}
+
+#pscore {
+	width: 280px;
+	float: left;
+	background-color: #00b2ee;
+}
+
+#rscore {
+	width: 280px;
+	float: right;
+	background-color: #B23AEE;
+}
+
+#pescore{
+	background-color: #00e5ee;	
+}
+
+#roscore{
+	background-color: #cd69c9;
+}
+
+#all{
+	width: 526px;
+	height: 526px;
+	padding: 20px;
+	margin: 20px auto;
+	position: relative;
+
+}
+#grid-container{
+	width: 100%;
+	height: 100%;
+	background-color: #bbada0;
+	border-radius: 10px;
+	position: absolute;
+	z-index:0;
+}
+
+#cover{
+	width: 100%;
+	height: 100%;
+	border-radius: 10px;
+	position: absolute;
+	z-index: 1 ;
+}

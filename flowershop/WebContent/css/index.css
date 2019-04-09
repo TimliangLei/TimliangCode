@@ -1,0 +1,259 @@
+body{
+	margin: 0px;
+	padding: 0px;
+}
+@font-face {
+	font-family: Marmelad-Regular;
+	src: url('../Marmelad-Regular.ttf');
+}
+	
+@font-face {
+	font-family: OpenSans-Regular;
+	src: url('../OpenSans-Regular.ttf');
+}
+#banner {
+  padding: 0px;
+  margin: 0px;
+  position: absolute;
+	left: 0px; 
+	right: 0px; 
+	top: 0px;
+  background-image: url(../img/banner2.jpg);
+  width: auto;
+  background-size:100% 100%;
+  background-repeat: no-repeat;
+	height:670px;
+}
+.site-nav{
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	width: auto;
+	height: 25px;
+	margin: 0;
+	padding: 0;
+	background-color: rgba(	139,137,137,0.5);
+	z-index: 5;
+}
+.site-nav-l{
+	position: absolute;
+	left: 35px;
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+.site-nav-l li{
+	float: left;
+	padding-right: 10px;
+	padding-left: 10px;
+	text-align: center;
+	line-height: 22px;
+}
+.hello{
+	background-color: orange;
+	height: 25px;
+}
+
+.site-nav-l a{
+	text-decoration: none;
+	color: black;
+	font-size: 16px;
+}
+.site-nav-r{
+	position: absolute;
+	left: 735px;
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+.site-nav-r li{
+	float: left;
+	padding-right: 2px;
+	padding-left: 2px;
+	text-align: center;
+	line-height: 22px;
+}
+.site-nav-r a{
+	text-decoration: none;
+	color: black;
+	font-size: 16px;
+}
+.site-nav-r a:hover{
+	color: orange;
+}
+.site-nav-pipe{
+	font-size: small;
+}
+#photo{
+	position: absolute;
+	top: 10%;
+	left: 45px;
+	width: 50px;
+	height: 50px;
+	background: url(../img/flower.png);
+	background-size:100% 100%;
+  background-repeat: no-repeat;
+}
+#name{
+	float: left;
+	position: absolute;
+	top: 10%;
+	left: 95px;
+	width: 500px;
+	height: 50px;
+	font-family: "楷体";
+	font-weight: bolder;
+	font-size: 50px;
+	color: 	#FFA54F;
+}
+
+nav {
+		clear: both;
+		margin: 0 auto;
+		position: absolute;
+		top: 23%;
+		left: 10%;
+	}
+nav ul {
+		list-style-type: none;
+		padding: 0;
+		margin: 0;
+	}
+	
+nav ul li {
+		float: left;
+		width: 100px;
+		height: 60px;
+		line-height: 60px;
+		text-align: center;
+	}
+	
+nav ul li a {
+		width: 100px;
+		height: 60px;
+		display: block;
+		font-weight: 800;
+		background: rgba(0, 255, 200, 0.15);
+		color: white;
+		text-decoration: none;
+		font-size: 25px;
+		position: relative;
+		z-index: 3;
+		font-family: "楷体";
+	}
+	
+nav ul li a span {
+		display: block;
+		width: 100px;
+		height: 60px;
+		position: absolute;
+		top: 0px;
+		z-index: -2;
+		transition: background-color 0.5s linear;
+	}
+	
+ul li a:hover span {
+		background-color: orange;
+	}
+	
+.container{
+	padding:0;
+}
+.banner-text{
+	margin-top:280px;
+	margin-left: 150px;
+  padding: 40px;
+  padding-top: 0px;
+  background: rgba(0, 0, 0, 0.43);
+	width:350px;
+	height: 300px;
+}
+.banner-text h1{
+	font-family: OpenSans-Regular;
+	color: wheat;
+	float: left;
+	font-size: 40px;
+}
+.banner-text img{
+	width: 100px;
+	height: 100;
+	margin-left: 40px;
+	margin-top: 20px;
+	float: left;
+}
+@font-face {
+	font-family: fangsong;
+	src: url('../fangsong.ttf');
+}
+@font-face {
+	font-family: zhunyuan;
+	src: url('../zhunyuan.ttf');
+}
+.banner-text p{
+	clear: both;
+	font-family: zhunyuan;
+	color: wheat;
+	line-height: 30px;
+	margin-bottom:20px;
+	font-size:18px;
+}
+.banner-text a{
+	font-size:16px;
+	color:#fff;
+	border-bottom: 1px solid #FFD158;
+	margin-left:190px ;
+}
+#modal-content{
+	position: absolute;
+	top: 20%;
+	left: 25%;
+	margin: 0 auto;
+	width: 620px;
+	height: 400px;
+	background-color: grey;
+	padding: 0;
+	z-index: 3;
+}
+.modal-header{
+	width: auto;
+	height: 40px;
+
+}
+.modal-body{
+	width: 100%;
+	height: 100%;
+	margin-left: 2px;
+
+}
+.close{
+	position: absolute;
+	right: 0;
+	background-image: url(../img/close.png);
+	background-repeat: no-repeat;
+	background-size: 100% 100%;
+	width: 40px;
+	height: 40px;
+
+}
+video{
+	width: 610px;
+	height: 340px;
+
+}
+
+#weixin{
+	width: 150px;
+	height:150px;
+}
+#weixin ul{
+	clear: both;
+	padding: 0px;
+	list-style-type: none;
+	position:absolute;
+	display: none;
+}
+#weixin_photo img{
+	width: 150px;
+	height: 150px;
+}

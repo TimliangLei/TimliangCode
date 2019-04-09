@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="false" key="J2EE_EXPORT_OVERWRITE"/>
+	<item value="false" key="J2EE_EXPORT_SOURCE"/>
+	<list key="MRU_RUNTIME_STORE">
+		<item value="NULL_RUNTIME"/>
+	</list>
+	<list key="J2EE_EXPORT_JST_WEB">
+		<item value="C:\Users\Administrator\Desktop\LchessRobotService.war"/>
+		<item value="F:\JavaEE\LchessService\LchessService.war"/>
+		<item value="D:\Tomcat\webapps\HelloWordStruts2.war"/>
+		<item value="F:\JavaEE\Login\Login.war"/>
+		<item value="F:\JavaEE\hello\hello.war"/>
+		<item value="F:\JavaEE\test1\test1.war"/>
+	</list>
+</section>

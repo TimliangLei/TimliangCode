@@ -1,0 +1,387 @@
+package com.ltl.Lchess;
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import javafx.scene.chart.PieChart.Data;
+import net.sf.json.JSONObject;
+
+/**
+ * Servlet implementation class P2PService
+ */
+@WebServlet("/P2PService")
+public class P2PService extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	private ArrayList<String> TEMPLIST =null;
+	private ArrayList<String> NAMELIST = null;
+	private ArrayList<String> DATAMAP = null;
+	private static String USERID = "userid";
+	private static String CHESS_STEP="chess_step";
+	private static String STARTGAME = "start_game";
+	private static String LOGOUT = "logout";
+	private static String READ = "read";
+	private static String NAMELIST_str = "namelist";
+	private static int ISPLAYING = 0;
+	private static int NOTPLAYING = 1;
+	private int ROW = 10;
+	private int COL = 10;   
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public P2PService() {
+		NAMELIST = new ArrayList<String>();
+		TEMPLIST = new ArrayList<String>();
+		DATAMAP = new ArrayList<String>();
+		//String key = player1.getName()+":"+player2.getName();
+		//DATAMAP内容格式 12:45={"pname":"12","pnum":0,"pstep":[""],"pblack":[""],"pflag":0,"rname":"45","rnum":0,"rstep":[""],"rblack":[""],"rflag":1}
+		
+		
+	}
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.setContentType("text/html;charset=UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		String commond =new String(request.getParameter("commond"));
+		String value =new String(request.getParameter("value"));
+		System.out.println("-------------------------------------");
+		System.out.println("传送的键值对：");
+		System.out.println(commond+":"+value+"\n");
+		//初始化对象参数
+		GameRule gameRule = new GameRule();
+		int chessBoard[][] = new int[ROW][COL];
+		String result_data="";	
+		Human player1 = new Human("pname");
+		Human player2 = new Human("rname");
+		if (commond.equals(NAMELIST_str)) {
+			String json_namelist = "{\"name\":[";
+			if (NAMELIST.size()>0) {
+				for(String str:NAMELIST) {
+					json_namelist+= "\""+str+"\",";
+				}
+				json_namelist = json_namelist.substring(0, json_namelist.length()-1)+"]}";
+				out.print(json_namelist);
+			}
+			
+			out.flush();
+			out.close();
+		}
+		if (commond.equals(USERID)) {
+			String name = value;
+			if (NAMELIST.contains(name)) {
+				out.write("用户名已经存在");
+				System.out.println("用户名已经存在");
+			}
+			else {
+				out.write("登陆成功");
+				System.out.println("登陆成功");
+				NAMELIST.add(name);
+			}
+			System.out.println("-------------------------------------");
+			out.flush();
+			out.close();
+		}
+		if (commond.equals(LOGOUT)) {
+			if (value!=null) {
+				String name = value;
+				NAMELIST.remove(name);
+				TEMPLIST.remove(name);
+				int index = gameRule.parseDATAMAP(DATAMAP, name);
+				if (index!=-1) {
+					String json_str = gameRule.getDATAMAP_JSON(DATAMAP, index);
+					JSONObject jo = JSONObject.fromObject(json_str);//将接收到的json格式字符串转换成json对象
+
+					player1.setName(jo.getString("pname"));
+					player1.setStep_chess_list(gameRule.mySplitStep(jo.getString("pstep")));
+					player1.setBnum(jo.getInt("pnum"));
+					player1.setBlack_chess_list(gameRule.mySplitBlack(jo.getString("pblack")));
+					player1.setPLAYING(jo.getInt("pflag"));
+
+					player2.setName(jo.getString("rname"));
+					player2.setStep_chess_list(gameRule.mySplitStep(jo.getString("rstep")));
+					player2.setBnum(jo.getInt("rnum"));
+					player2.setBlack_chess_list(gameRule.mySplitBlack(jo.getString("rblack")));
+					player2.setPLAYING(jo.getInt("rflag"));
+					
+					if (name.equals(player1.getName())) {
+						player1.setPLAYING(-1);
+					}
+					if (name.equals(player2.getName())) {
+						player2.setPLAYING(-1);
+					}
+					result_data = "{" + 
+							"\"pname\":\""+player1.getName()+"\"," + 
+							"\"pnum\":"+player1.getBnum()+"," + 
+							"\"pstep\":"+player1.getStep_chess()+"," + 
+							"\"pblack\":"+player1.getBlack_chess()+"," +
+							"\"pflag\":"+player1.getPLAYING()+"," + 
+							"\"rname\":\""+player2.getName()+"\"," + 
+							"\"rnum\":"+player2.getBnum()+"," + 
+							"\"rstep\":"+player2.getStep_chess()+"," + 
+							"\"rblack\":"+player2.getBlack_chess()+"," + 
+							"\"rflag\":"+player2.getPLAYING()+
+							"}";
+					String key = player1.getName()+":"+player2.getName();
+					DATAMAP.remove(index);
+					DATAMAP.add(key+"="+result_data);
+				}
+				
+			}
+			System.out.println("-------------------------------------");
+		}
+		if (commond.equals(STARTGAME)) {
+			//不断检查DATAMAP 中对局结束的记录（flag均为-1）
+			for (int i = 0; i < DATAMAP.size(); i++) {
+				String str = gameRule.getDATAMAP_JSON(DATAMAP, i);
+				JSONObject jo_str = JSONObject.fromObject(str);//将接收到的json格式字符串转换成json对象
+				Human temp_player1 = new Human("pname");
+				Human temp_player2 = new Human("rname");
+				temp_player1.setPLAYING(jo_str.getInt("pflag"));
+				temp_player2.setPLAYING(jo_str.getInt("rflag"));
+				if(temp_player1.getPLAYING()==-1||temp_player2.getPLAYING()==-1) {
+					DATAMAP.remove(i);
+				}
+			}
+			String name = value;
+			if (!TEMPLIST.contains(name)) {
+				TEMPLIST.add(name);
+			}
+			if (TEMPLIST.size()==1) {
+				player1.setName(TEMPLIST.get(0));
+			}
+			else if (TEMPLIST.size()>1) {
+				player1.setName(TEMPLIST.get(0));
+				player2.setName(TEMPLIST.get(1));
+				TEMPLIST.remove(player1.getName());
+				TEMPLIST.remove(player2.getName());
+				String key = player1.getName()+":"+player2.getName();
+				result_data = "{" + 
+						"\"pname\":\""+player1.getName()+"\"," + 
+						"\"pnum\":"+player1.getBnum()+"," + 
+						"\"pstep\":"+player1.getStep_chess()+"," + 
+						"\"pblack\":"+player1.getBlack_chess()+"," +
+						"\"pflag\":"+player1.getPLAYING()+"," + 
+						"\"rname\":\""+player2.getName()+"\"," + 
+						"\"rnum\":"+player2.getBnum()+"," + 
+						"\"rstep\":"+player2.getStep_chess()+"," + 
+						"\"rblack\":"+player2.getBlack_chess()+"," + 
+						"\"rflag\":"+player2.getPLAYING()+
+						"}";
+				DATAMAP.add(key+"="+result_data);
+				
+			}
+			result_data = "{" + 
+					"\"pname\":\""+player1.getName()+"\"," + 
+					"\"pnum\":"+player1.getBnum()+"," + 
+					"\"pstep\":"+player1.getStep_chess()+"," + 
+					"\"pblack\":"+player1.getBlack_chess()+"," +
+					"\"pflag\":"+player1.getPLAYING()+"," + 
+					"\"rname\":\""+player2.getName()+"\"," + 
+					"\"rnum\":"+player2.getBnum()+"," + 
+					"\"rstep\":"+player2.getStep_chess()+"," + 
+					"\"rblack\":"+player2.getBlack_chess()+"," + 
+					"\"rflag\":"+player2.getPLAYING()+
+					"}";
+			System.out.println(result_data);
+			out.print(result_data);
+			System.out.println("-------------------------------------");
+			out.flush();
+			out.close();
+		}
+		
+		if (commond.equals(READ)) {
+			String[] elements = value.split("_");
+			String whoRequst = elements[0];
+			String json = elements[1];
+			System.out.println(whoRequst+" READ");
+			JSONObject jo = JSONObject.fromObject(json);//将接收到的json格式字符串转换成json对象
+			player1.setName(jo.getString("pname"));
+			player2.setName(jo.getString("rname"));
+			int index=-1;
+			String key = null;
+			String JSON_str =null;
+			
+			if (player1.getName()!=null&&player2.getName()!=null) {
+				index = gameRule.parseDATAMAP(DATAMAP, player1.getName()+":"+player2.getName());
+				if (index != -1) {
+					JSON_str = gameRule.getDATAMAP_JSON(DATAMAP, index);
+				}
+			}else if (player1.getName()!=null) {
+				index = gameRule.parseDATAMAP(DATAMAP, player1.getName());
+				if (index != -1) {
+					JSON_str = gameRule.getDATAMAP_JSON(DATAMAP, index);
+				}
+			}else {
+				index = gameRule.parseDATAMAP(DATAMAP, player2.getName());
+				if (index != -1) {
+					JSON_str = gameRule.getDATAMAP_JSON(DATAMAP, index);
+				}
+			}
+			if (JSON_str!=null) {
+				
+				System.out.println("JSON_str:"+JSON_str);
+				out.print(JSON_str);
+//				JSONObject jo_str = JSONObject.fromObject(JSON_str);//将接收到的json格式字符串转换成json对象
+//
+//				player1.setPLAYING(jo_str.getInt("pflag"));
+//				player2.setPLAYING(jo_str.getInt("rflag"));
+//				if(player1.getPLAYING()==-1||player2.getPLAYING()==-1) {
+//					index = gameRule.parseDATAMAP(DATAMAP, player1.getName()+":"+player2.getName());
+//					DATAMAP.remove(index);
+//				}
+			}
+			else {
+				result_data = "{" + 
+						"\"pname\":\""+player1.getName()+"\"," + 
+						"\"pnum\":"+player1.getBnum()+"," + 
+						"\"pstep\":"+player1.getStep_chess()+"," + 
+						"\"pblack\":"+player1.getBlack_chess()+"," +
+						"\"pflag\":"+player1.getPLAYING()+"," + 
+						"\"rname\":\""+player2.getName()+"\"," + 
+						"\"rnum\":"+player2.getBnum()+"," + 
+						"\"rstep\":"+player2.getStep_chess()+"," + 
+						"\"rblack\":"+player2.getBlack_chess()+"," + 
+						"\"rflag\":"+player2.getPLAYING()+
+						"}";
+				out.print(result_data);
+			}
+			System.out.println("-------------------------------------");
+			out.flush();
+			out.close();
+			
+		}
+		
+		if (commond.equals(CHESS_STEP)) {
+			String[] elements = value.split("_");
+			String whoRequst = elements[0];
+			String json = elements[1];
+			System.out.println(whoRequst+" CHESS_STEP");
+			
+			System.out.println("开始解包");
+			JSONObject jo = JSONObject.fromObject(json);//将接收到的json格式字符串转换成json对象
+
+			player1.setName(jo.getString("pname"));
+			player1.setStep_chess_list(gameRule.mySplitStep(jo.getString("pstep")));
+			player1.setBnum(jo.getInt("pnum"));
+			player1.setBlack_chess_list(gameRule.mySplitBlack(jo.getString("pblack")));
+			player1.setPLAYING(jo.getInt("pflag"));
+			System.out.println(player1.toString());
+
+			player2.setName(jo.getString("rname"));
+			player2.setStep_chess_list(gameRule.mySplitStep(jo.getString("rstep")));
+			player2.setBnum(jo.getInt("rnum"));
+			player2.setBlack_chess_list(gameRule.mySplitBlack(jo.getString("rblack")));
+			player2.setPLAYING(jo.getInt("rflag"));
+			System.out.println(player2.toString());
+			//放置棋盘
+			chessBoard=gameRule.space("pstep", player1.getStep_chess_list(), chessBoard);
+			chessBoard=gameRule.space("pblack", player1.getBlack_chess_list(), chessBoard);
+			chessBoard=gameRule.space("rstep", player2.getStep_chess_list(), chessBoard);
+			chessBoard=gameRule.space("rblack", player2.getBlack_chess_list(), chessBoard);
+			System.out.println("解包完成\n");
+			
+			int index = gameRule.parseDATAMAP(DATAMAP, player1.getName()+":"+player2.getName());
+			if (index!=-1) {
+				String str = gameRule.getDATAMAP_JSON(DATAMAP, index);
+				JSONObject jo_old = JSONObject.fromObject(str);//将接收到的json格式字符串转换成json对象
+				if (jo_old.getInt("pflag")!=-1&&jo_old.getInt("rflag")!=-1) {
+					if(!isfinish(chessBoard)) {//判断是否游戏结束
+
+						if (player1.getPLAYING()==ISPLAYING) {//判断刚才是谁下的
+							player1.appendBlack_chess(gameRule.mySplitBlack(gameRule.testBlack(chessBoard, ROW, COL)));
+							player1.setBnum(player1.getBnum()+gameRule.getBlackNum());
+							player1.setPLAYING(NOTPLAYING);
+							player2.setPLAYING(ISPLAYING);
+						}
+						else{
+							player2.appendBlack_chess(gameRule.mySplitBlack(gameRule.testBlack(chessBoard, ROW, COL)));
+							player2.setBnum(player2.getBnum()+gameRule.getBlackNum());
+							player2.setPLAYING(NOTPLAYING);
+							player1.setPLAYING(ISPLAYING);
+						}
+						//放置棋盘
+						chessBoard=gameRule.space("pstep", player1.getStep_chess_list(), chessBoard);
+						chessBoard=gameRule.space("pblack", player1.getBlack_chess_list(), chessBoard);
+						chessBoard=gameRule.space("rstep", player2.getStep_chess_list(), chessBoard);
+						chessBoard=gameRule.space("rblack", player2.getBlack_chess_list(), chessBoard);
+						if (isfinish(chessBoard)) {
+							player1.setPLAYING(-1);
+							player2.setPLAYING(-1);
+							System.out.println("gameover");
+						}
+					}
+					else {
+						player1.setPLAYING(-1);
+						player2.setPLAYING(-1);
+						System.out.println("gameover");
+					}
+					//构造并打印JSON数据包
+					System.out.println("\n构造并打印JSON数据包");
+					result_data = "{" + 
+							"\"pname\":\""+player1.getName()+"\"," + 
+							"\"pnum\":"+player1.getBnum()+"," + 
+							"\"pstep\":"+player1.getStep_chess()+"," + 
+							"\"pblack\":"+player1.getBlack_chess()+"," +
+							"\"pflag\":"+player1.getPLAYING()+"," + 
+							"\"rname\":\""+player2.getName()+"\"," + 
+							"\"rnum\":"+player2.getBnum()+"," + 
+							"\"rstep\":"+player2.getStep_chess()+"," + 
+							"\"rblack\":"+player2.getBlack_chess()+"," + 
+							"\"rflag\":"+player2.getPLAYING()+
+							"}";
+					String key = player1.getName()+":"+player2.getName();
+					index = gameRule.parseDATAMAP(DATAMAP, key);
+					DATAMAP.remove(index);
+					DATAMAP.add(key+"="+result_data);
+					System.out.println(result_data);
+					out.print(result_data);
+				}
+				else {
+					System.out.println(str);
+					out.print(str);
+				}
+			}
+			System.out.println("处理结束");
+			System.out.println("-------------------------------------");
+			out.flush();
+			out.close();
+		}
+		System.out.println();
+//		System.out.println("NAMELIST:"+NAMELIST.toString());
+//		System.out.println("TEMPLIST:"+TEMPLIST.toString());
+//		System.out.println(DATAMAP.toString());
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+	public boolean isfinish(int[][] chessBoard) {
+		for(int i = 1; i < ROW; i++) {
+			for(int j = 1; j < COL; j++) {
+				if (chessBoard[i][j]==0) {
+					return false;
+				}
+			}
+		}
+		return true;
+
+	}
+}

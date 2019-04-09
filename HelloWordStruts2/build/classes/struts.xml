@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+   "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+   "http://struts.apache.org/dtds/struts-2.0.dtd">
+<!-- 指定struts.xml的根元素 -->
+<struts>
+    <!-- 配置包，包名为default，该包继承了struts 2框架的默认包 struts-default -->
+    <constant name="struts.devMode" value="true"/>
+    <package name="default" extends="struts-default">
+        <!-- 定义名为hello的action，改action的处理类为com.action.TestAction,并映射到success.jsp页面 -->
+        <action name="hello" class="cn.w3cshool.struts2.HelloWorldAction" method="execute">
+        	<interceptor-ref name="params"></interceptor-ref>
+        	<interceptor-ref name="timer"></interceptor-ref>
+            <result name="success">/HelloWorld.jsp</result>
+            <result name="error">/error.jsp</result>
+        </action>
+    </package>
+
+</struts>

@@ -1,0 +1,15 @@
+package testPoint;
+
+import java.util.HashMap;
+import java.util.UUID;
+
+public class testHashMap {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		String name = "123";
+		String id = UUID.randomUUID().toString();
+		String IdAndName = id+"_"+name;
+	}
+
+}

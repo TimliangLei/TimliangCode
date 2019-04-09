@@ -1,0 +1,71 @@
+package servlet;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.zip.GZIPOutputStream;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+/**
+ * Servlet implementation class test2
+ */
+
+public class test2 extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public test2() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
+
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		String path = this.getServletContext().getRealPath("resource/1.jpg");
+		File file = new File(path);
+		response.setContentType("text/html;charset=utf-8");
+		FileInputStream inputStream = new FileInputStream(path);
+		System.out.println("原始数据大小为："+file.length());
+		
+		String pathz = this.getServletContext().getRealPath("resource/a1.zip");
+		File filez = new File(pathz);
+		ByteArrayOutputStream bout = new ByteArrayOutputStream();
+		GZIPOutputStream gOutputStream = new GZIPOutputStream(bout);
+		gOutputStream.write(inputStream.read());
+		byte b[] = new byte[1024];
+		int len = 0;
+		while ((len = inputStream.read(b))>0) {
+			
+		}
+		
+		gOutputStream.close();
+		byte g[] = bout.toByteArray();
+		response.setHeader("Content-Encoding", "gzip");
+		response.setHeader("Content-Length", g.length+"");
+		System.out.println("压缩后数据大小为："+g.length);
+		
+		response.getWriter().println(g);
+	
+			
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+	}
+
+}

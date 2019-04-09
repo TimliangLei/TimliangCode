@@ -1,0 +1,20 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+        "http://struts.apache.org/dtds/struts-2.5.dtd">
+<!-- 指定struts.xml的根元素 -->
+<struts>
+     
+    <!-- 开发模式下使用，可以打印出更详细的错误信息 -->  
+    <constant name="struts.devMode" value="true"></constant>  
+    <!-- 是否开启动态方法调用 -->  
+    <constant name="struts.enable.DynamicMethodInvocation" value="true" />  
+    
+    <package name="myPackage" extends="struts-default">
+    	<global-allowed-methods>add,update</global-allowed-methods>
+        <action name="userAction" class="myStruts2.userAction">
+            <result name="add">/user_add.jsp</result>
+            <result name="update">/user_update.jsp</result>
+        </action>
+    </package>
+
+</struts>

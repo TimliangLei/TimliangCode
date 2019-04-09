@@ -1,0 +1,61 @@
+body{
+	padding: 0px;
+	margin: 0px;
+	
+}
+#container{
+	background-image: url(../img/huazhan.jpg);
+	background-size: 100% 100%;
+	background-repeat:no-repeat ;
+	width: 1360px;
+	height: 670px;
+}
+#title{
+	text-align: center;
+	padding: 20px;
+	padding-bottom: 10px;
+	
+}
+@font-face {
+	font-family: zhanbihei;
+	src: url('../zhanbihei.ttf');
+}
+#title a{
+	text-decoration: none;
+	color: rosybrown;
+	font-family: zhanbihei;
+	font-size: 100px;
+	font-weight: 200px;
+}
+#paint{
+	width: 1224px;
+	height: 500px;
+	background-image: url("../img/1.jpg");
+	background-size: 100% 100%;
+	margin: 0 auto;
+	border-radius: 50px;
+	box-shadow: 10px 10px 10px grey;
+	
+}
+#pre{
+	padding-top: 200px;
+	width: 50%;
+	height: 200px;
+	float: left;
+	display: block;
+}
+#pre img{
+	width: 45px;
+	height: 50px;
+}
+#next{
+	padding-top: 200px;
+	float: right;
+	display: block;
+	width: 50%;
+}
+#next img{
+	width: 45px;
+	height: 50px;
+	float: right;
+}
